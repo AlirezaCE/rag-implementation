@@ -28,6 +28,7 @@ with open("./data/index/passages.jsonl", 'r', encoding='utf-8') as f:
 print("Creating DPR retriever...")
 retriever = DPRRetriever(
     index=index,
+    passages=passages,
     query_encoder_name="facebook/dpr-question_encoder-single-nq-base"
 )
 
