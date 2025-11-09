@@ -43,13 +43,13 @@ def download_wikipedia(output_dir: str, date: str = "2018-12", language: str = "
     logger.info(f"Output directory: {output_path.absolute()}")
 
     try:
-        # Load Wikipedia dataset
-        # Using the wikipedia dataset from HuggingFace
+        # Load Wikipedia dataset using the new Wikimedia dumps format
+        # The new recommended way is to use wikimedia/wikipedia dataset
+        logger.info("Loading Wikipedia dataset from Wikimedia...")
         dataset = load_dataset(
-            "wikipedia",
+            "wikimedia/wikipedia",
             f"{date}.{language}",
-            split="train",
-            trust_remote_code=True
+            split="train"
         )
 
         logger.info(f"Loaded {len(dataset)} Wikipedia articles")
