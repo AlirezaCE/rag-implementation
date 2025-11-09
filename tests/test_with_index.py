@@ -3,6 +3,7 @@
 Test RAG with real FAISS index.
 """
 
+import json
 from rag import RAGSequenceForGeneration, RAGConfig
 from rag.retrieval import DPRRetriever, FAISSIndex
 
@@ -15,7 +16,14 @@ config = RAGConfig(
 
 # Load FAISS index and create retriever
 print("Loading FAISS index...")
-index = FAISSIndex.load("./data/index")
+index = FAISSIndex.load("./data/index/index.faiss")
+
+# Load passages
+print("Loading passages...")
+passages = []
+with open("./data/index/passages.jsonl", 'r', encoding='utf-8') as f:
+    for line in f:
+        passages.append(json.loads(line))
 
 print("Creating DPR retriever...")
 retriever = DPRRetriever(
