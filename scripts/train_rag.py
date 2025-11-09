@@ -207,29 +207,45 @@ def train_rag(
             questions = batch['questions']
             answers = batch['answers']
 
-            # Generate answers using the model
-            # For now, we'll use a simplified training approach
-            # In production, you'd implement proper loss computation
             try:
-                # Use the generate_from_query method for each question
-                # This is a simplified version - ideally you'd batch this
-                total_batch_loss = 0
-                for question, answer_list in zip(questions, answers):
-                    # Get the first answer as target
-                    target_answer = answer_list[0] if isinstance(answer_list, list) else answer_list
+                # Tokenize questions
+                question_encodings = model.generator.tokenizer(
+                    questions,
+                    padding=True,
+                    truncation=True,
+                    max_length=256,
+                    return_tensors="pt"
+                )
+                input_ids = question_encodings["input_ids"].to(device)
+                attention_mask = question_encodings["attention_mask"].to(device)
 
-                    # For now, skip the actual loss computation
-                    # This needs proper implementation with the generator's forward pass
-                    pass
+                # Tokenize target answers (first answer from each answer list)
+                target_texts = [ans[0] if isinstance(ans, list) else ans for ans in answers]
+                label_encodings = model.generator.tokenizer(
+                    target_texts,
+                    padding=True,
+                    truncation=True,
+                    max_length=128,
+                    return_tensors="pt"
+                )
+                labels = label_encodings["input_ids"].to(device)
+                # Replace padding token ids with -100 so they're ignored in loss
+                labels[labels == model.generator.tokenizer.pad_token_id] = -100
 
-                # Placeholder loss for now
-                loss = torch.tensor(0.0, requires_grad=True, device=device)
-                logger.warning("Training loss computation not fully implemented yet - this is a placeholder")
-                break  # Stop after first batch for now
+                # Forward pass
+                outputs = model(
+                    input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    labels=labels,
+                    return_dict=True
+                )
+
+                loss = outputs["loss"]
 
             except Exception as e:
                 logger.error(f"Error in training step: {e}")
                 raise
+
             total_loss += loss.item()
 
             # Backward pass
@@ -263,13 +279,38 @@ def train_rag(
                 questions = batch['questions']
                 answers = batch['answers']
 
+                # Tokenize questions
+                question_encodings = model.generator.tokenizer(
+                    questions,
+                    padding=True,
+                    truncation=True,
+                    max_length=256,
+                    return_tensors="pt"
+                )
+                input_ids = question_encodings["input_ids"].to(device)
+                attention_mask = question_encodings["attention_mask"].to(device)
+
+                # Tokenize target answers (first answer from each answer list)
+                target_texts = [ans[0] if isinstance(ans, list) else ans for ans in answers]
+                label_encodings = model.generator.tokenizer(
+                    target_texts,
+                    padding=True,
+                    truncation=True,
+                    max_length=128,
+                    return_tensors="pt"
+                )
+                labels = label_encodings["input_ids"].to(device)
+                # Replace padding token ids with -100 so they're ignored in loss
+                labels[labels == model.generator.tokenizer.pad_token_id] = -100
+
                 outputs = model(
-                    input_ids=questions,
-                    labels=answers,
+                    input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    labels=labels,
                     return_dict=True
                 )
 
-                val_loss += outputs.loss.item()
+                val_loss += outputs["loss"].item()
 
         avg_val_loss = val_loss / len(val_loader)
         logger.info(f"Validation loss: {avg_val_loss:.4f}")
