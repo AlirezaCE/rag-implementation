@@ -227,6 +227,8 @@ class FAISSIndex:
         instance.embedding_dim = index.d
         instance.index = index
         instance.use_gpu = use_gpu
+        instance.metric = "inner_product"  # Default metric for RAG
+        instance.nprobe = 128  # Default nprobe value
 
         # Move to GPU if requested
         if use_gpu and faiss.get_num_gpus() > 0:
