@@ -30,7 +30,8 @@ retriever = DPRRetriever(
     question_encoder="facebook/dpr-question_encoder-single-nq-base",
     ctx_encoder="facebook/dpr-ctx_encoder-single-nq-base",
     index=index,
-    passages=passages
+    passages=passages,
+    device="cpu"  # Use CPU to avoid GPU compatibility issues
 )
 
 print("Creating RAG model...")
