@@ -47,7 +47,6 @@ data/
 *.pickle
 outputs/
 checkpoints/
-models/
 *.bin
 *.pt
 *.pth
