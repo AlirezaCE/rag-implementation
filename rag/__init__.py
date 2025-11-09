@@ -21,7 +21,6 @@ from .generation import (
 )
 from .training import (
     RAGTrainer,
-    RAGConfig as TrainingConfig,
 )
 
 __version__ = "1.0.0"
@@ -40,5 +39,4 @@ __all__ = [
     "BARTGenerator",
     # Training
     "RAGTrainer",
-    "TrainingConfig",
 ]
