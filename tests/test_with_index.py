@@ -27,9 +27,10 @@ with open("./data/index/passages.jsonl", 'r', encoding='utf-8') as f:
 
 print("Creating DPR retriever...")
 retriever = DPRRetriever(
+    question_encoder="facebook/dpr-question_encoder-single-nq-base",
+    ctx_encoder="facebook/dpr-ctx_encoder-single-nq-base",
     index=index,
-    passages=passages,
-    query_encoder_name="facebook/dpr-question_encoder-single-nq-base"
+    passages=passages
 )
 
 print("Creating RAG model...")
