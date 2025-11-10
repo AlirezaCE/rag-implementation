@@ -330,8 +330,9 @@ def train_rag(
                 model.generator.save_pretrained(f"{output_dir}/best_model")
                 tokenizer.save_pretrained(f"{output_dir}/best_model")
 
-                # Save query encoder
+                # Save query encoder AND its tokenizer
                 retriever.question_encoder.save_pretrained(f"{output_dir}/question_encoder")
+                retriever.question_tokenizer.save_pretrained(f"{output_dir}/question_encoder")
 
                 # Save training info
                 with open(f"{output_dir}/training_info.json", 'w') as f:
