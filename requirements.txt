@@ -21,6 +21,11 @@ python-dotenv>=1.0.0
 wandb>=0.15.0  # For experiment tracking
 tensorboard>=2.13.0
 
+# API Server
+flask>=2.3.0
+flask-cors>=4.0.0
+requests>=2.31.0
+
 # Evaluation
 rouge-score>=0.1.2
 sacrebleu>=2.3.0
